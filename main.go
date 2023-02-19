@@ -1,16 +1,22 @@
 package main // import "github.com/lego963/grafac"
-
 import (
 	"os"
 
-	"github.com/lego963/grafac/internal"
+	"github.com/mitchellh/cli"
 )
 
-func init() {
-	// this is a good place to patch SHA-1 support back into x509
-	internal.PatchSha1()
-}
-
 func main() {
-	os.Exit(command.Run(os.Args[1:]))
+	args := os.Args[1:]
+
+	if Commands == nil {
+		initCommands()
+	}
+
+	// Build the CLI so far, we do this so we can query the subcommand.
+	_ = &cli.CLI{
+		Args:     args,
+		Commands: Commands,
+		//HelpFunc:   helpFunc,
+		HelpWriter: os.Stdout,
+	}
 }
